@@ -1,6 +1,6 @@
 import socket
 import ssl
-import dill as pickle
+import cloudpickle as pickle
 
 
 def make_socket(host, port, bind=True):
