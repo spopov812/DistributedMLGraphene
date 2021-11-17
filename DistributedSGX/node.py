@@ -34,11 +34,10 @@ def run_node(node_address, node_port, host_address, host_port):
 	with open("args", 'wb') as f:
 		pickle.dump(encrypted_data, f)
 
-	#data[0](*data[1:])
 	graphene()
 
 def graphene():
 	os.chdir("./DistributedSGX")
 	subprocess.run(["make"])
-	subprocess.run(["graphene-direct", "pytorch", "helloworld.py"])
+	subprocess.run(["graphene-direct", "pytorch", "training.py"])
 	os.chdir("..")
