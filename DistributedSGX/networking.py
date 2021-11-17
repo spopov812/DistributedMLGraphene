@@ -7,7 +7,7 @@ def make_socket(host, port, bind=True):
 	client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-	client = ssl.wrap_socket(client, keyfile="../MyKey.key", certfile="../MyCertificate.crt")
+	client = ssl.wrap_socket(client, keyfile="./MyKey.key", certfile="./MyCertificate.crt")
 
 	client.bind((host, port))
 

@@ -1,6 +1,7 @@
 import dill as pickle
 import subprocess
 from cryptography.fernet import Fernet
+import os
 
 from DistributedSGX.networking import *
 
@@ -34,6 +35,10 @@ def run_node(node_address, node_port, host_address, host_port):
 		pickle.dump(encrypted_data, f)
 
 	#data[0](*data[1:])
+	graphene()
 
-def init_manifest():
+def graphene():
+	os.chdir("./DistributedSGX")
 	subprocess.run(["make"])
+	subprocess.run(["graphene-direct", "pytorch", "helloworld.py"])
+	os.chdir("..")
