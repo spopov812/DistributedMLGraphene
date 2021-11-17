@@ -6,22 +6,29 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
+import torch.nn.functional as F
+from tqdm import tqdm
+
+from DistributedSGX.server import distributed_sgx
 
 from model import Net
-from net.comms import *
 
+@distributed_sgx(num_nodes=1)
+def train(dataloader, device, model, optimizer):
+	#Start training the model normally.
+	for inputs, labels in tqdm(dataloader):
+		inputs = inputs.to(device)
+		labels = labels.to(device)
 
-def init():
+		preds = model(inputs)
+		loss = F.nll_loss(preds, labels)
+		loss.backward()
+		optimizer.step()
 
-	client = make_socket('127.0.0.1', 6000)
-	connections = wait_on_connections(client, 1)
-
-	return connections
+	return True
 
 
 def main():
-
-	connections = init()
 
 	#Setup the distributed sampler to split the dataset to each GPU.
 	transform=transforms.Compose([
@@ -38,7 +45,7 @@ def main():
 	optimizer = optim.Adadelta(model.parameters(), lr=0.001)
 
 
-	send_data_all(connections, [dataloader, device, model, optimizer])
+	train(dataloader, device, model, optimizer)
 
 
 if __name__ == '__main__':

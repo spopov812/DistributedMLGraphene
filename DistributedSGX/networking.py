@@ -1,6 +1,6 @@
 import socket
 import ssl
-import pickle
+import dill as pickle
 
 
 def make_socket(host, port, bind=True):
@@ -53,7 +53,7 @@ def wait_on_data(client):
 
 		chunks.append(chunk)
 
-	return pickle.loads(b''.join(chunks))
+	return b''.join(chunks)
 
 
 def send_data_all(connections, data):
