@@ -33,7 +33,7 @@ def distributed_sgx(num_nodes=-1, model_arg_id=-1):
 			send_data_all(connections, data)
 
 			print("Waiting for return from node")
-			
+			wait_on_data_all(connections)
 
 			return empty_func
 
