@@ -8,7 +8,7 @@ from DistributedSGX.networking import *
 
 def init(node_address, node_port, host_address, host_port):
 
-	client = make_socket(node_address, node_port, bind=False)
+	client = make_socket(node_address, node_port)
 	connect_socket(client, host_address, host_port)
 
 	return client

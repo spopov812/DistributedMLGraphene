@@ -15,7 +15,13 @@ from DistributedSGX.server import distributed_sgx
 @distributed_sgx(num_nodes=1)
 def train(dataloader, device, model, optimizer):
 	#Start training the model normally.
+	i = 0
 	for inputs, labels in tqdm(dataloader):
+		i += 1
+
+		if i == 100:
+			break
+
 		inputs = inputs.to(device)
 		labels = labels.to(device)
 

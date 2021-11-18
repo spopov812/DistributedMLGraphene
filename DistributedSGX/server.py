@@ -7,16 +7,15 @@ def init(num_nodes):
 		raise ValueError("Number of nodes must be greater than 0")
 
 	client = make_socket('127.0.0.1', 6000)
-	connections = wait_on_connections(client, num_nodes)
 
-	return connections
+	return client
 
 
 def distributed_sgx(num_nodes=-1, model_arg_id=-1):
 
 	def decorator(func):
 
-		connections = init(num_nodes)
+		client = init(num_nodes)
 
 		def wrapper(*args, **kwargs):
 
@@ -29,11 +28,10 @@ def distributed_sgx(num_nodes=-1, model_arg_id=-1):
 
 			}
 
+			connections = wait_on_connections(client, num_nodes)
+
 			print("Sending data to node")
 			send_data_all(connections, data)
-
-			print("Waiting for return from node")
-			wait_on_data_all(connections)
 
 			return empty_func
 
