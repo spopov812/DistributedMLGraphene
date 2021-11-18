@@ -1,4 +1,4 @@
-import dill as pickle
+import cloudpickle as pickle
 import subprocess
 from cryptography.fernet import Fernet
 import os
@@ -17,9 +17,7 @@ def init(node_address, node_port, host_address, host_port):
 def init_crypto():
 
 	key = Fernet.generate_key()
-
 	print(key)
-
 	with open('./DistributedSGX/filekey.key', 'wb') as filekey:
 		filekey.write(key)
 
@@ -29,29 +27,33 @@ def run_node(node_address, node_port, host_address, host_port):
 
 	client = init(node_address, node_port, host_address, host_port)
 
-	"""
 	fernet = init_crypto()
 
 	data = wait_on_data(client)
 
-	encrypted_data = fernet.encrypt(data)
-
-	#print(encrypted_data)
+	encrypted_data = fernet.encrypt(pickle.dumps(data))
 
 	with open("./DistributedSGX/args.pickle", 'wb') as f:
 		pickle.dump(encrypted_data, f)
-	"""
 
+	with open("./DistributedSGX/args.pickle", 'rb') as f:
+		loaded = pickle.load(f)
+		print(pickle.loads(fernet.decrypt(loaded)))
+
+	"""
 	data = pickle.loads(wait_on_data(client))
 
-	data[0](*data[1:])
-
-	with open("args", 'wb') as f:
+	with open("./DistributedSGX/args.pickle", 'wb') as f:
 		pickle.dump(data, f)
+
+	with open("./DistributedSGX/args.pickle", 'rb') as f:
+		args = pickle.load(f)
+	"""
 
 	graphene()
 
 def graphene():
+	print("Starting graphene")
 	os.chdir("./DistributedSGX")
 	subprocess.run(["make"])
 	subprocess.run(["graphene-direct", "pytorch", "training.py"])

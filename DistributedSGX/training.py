@@ -1,12 +1,10 @@
 import os
+import cloudpickle as pickle
 from cryptography.fernet import Fernet
 
 
 def main():
 
-	print(os.getcwd())
-
-	"""
 	with open('filekey.key', 'rb') as filekey:
 		key = filekey.read()
 
@@ -15,18 +13,9 @@ def main():
 	fernet = Fernet(key)
 
 	with open('args.pickle', 'rb') as f:
-		encrypted = f.read()
+		encrypted = pickle.load(f)
 	
-	print(type(encrypted))
-
-	args = fernet.decrypt(encrypted)
-
-	"""
-
-	with open('args.pickle', 'rb') as f:
-		args = f.read()
-
-	#print(args)
+	args = pickle.loads(fernet.decrypt(encrypted))
 
 	args[0](*args[1:])
 

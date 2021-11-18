@@ -53,7 +53,7 @@ def wait_on_data(client):
 
 		chunks.append(chunk)
 
-	return b''.join(chunks)
+	return pickle.loads(b''.join(chunks))
 
 
 def send_data_all(connections, data):
