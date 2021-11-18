@@ -9,7 +9,6 @@ from DistributedSGX.networking import *
 def init(node_address, node_port, host_address, host_port):
 
 	client = make_socket(node_address, node_port, bind=False)
-
 	connect_socket(client, host_address, host_port)
 
 	return client
@@ -17,7 +16,7 @@ def init(node_address, node_port, host_address, host_port):
 def init_crypto():
 
 	key = Fernet.generate_key()
-	print(key)
+
 	with open('./DistributedSGX/filekey.key', 'wb') as filekey:
 		filekey.write(key)
 
@@ -26,29 +25,13 @@ def init_crypto():
 def run_node(node_address, node_port, host_address, host_port):
 
 	client = init(node_address, node_port, host_address, host_port)
-
 	fernet = init_crypto()
-
 	data = wait_on_data(client)
 
 	encrypted_data = fernet.encrypt(pickle.dumps(data))
 
 	with open("./DistributedSGX/args.pickle", 'wb') as f:
 		pickle.dump(encrypted_data, f)
-
-	with open("./DistributedSGX/args.pickle", 'rb') as f:
-		loaded = pickle.load(f)
-		print(pickle.loads(fernet.decrypt(loaded)))
-
-	"""
-	data = pickle.loads(wait_on_data(client))
-
-	with open("./DistributedSGX/args.pickle", 'wb') as f:
-		pickle.dump(data, f)
-
-	with open("./DistributedSGX/args.pickle", 'rb') as f:
-		args = pickle.load(f)
-	"""
 
 	graphene()
 

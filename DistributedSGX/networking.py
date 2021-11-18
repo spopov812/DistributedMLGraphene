@@ -56,6 +56,20 @@ def wait_on_data(client):
 	return pickle.loads(b''.join(chunks))
 
 
+def wait_on_data_all(client, num_connections):
+
+	client.listen()
+
+	ret = []
+
+	for _ in range(num_connections):
+		_ = client.accept()
+
+		ret.append(wait_on_data(client))
+
+	return ret
+
+
 def send_data_all(connections, data):
 
 	byte_array = pickle.dumps(data)

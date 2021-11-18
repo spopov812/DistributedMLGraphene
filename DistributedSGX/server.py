@@ -12,7 +12,7 @@ def init(num_nodes):
 	return connections
 
 
-def distributed_sgx(num_nodes=-1):
+def distributed_sgx(num_nodes=-1, model_arg_id=-1):
 
 	def decorator(func):
 
@@ -20,7 +20,20 @@ def distributed_sgx(num_nodes=-1):
 
 		def wrapper(*args, **kwargs):
 
-			send_data_all(connections, [func, *args, *kwargs])
+			data = {
+
+				"train_function" : func,
+				"model_arg_id" : model_arg_id,
+				"args" : args,
+				"kwargs" : kwargs
+
+			}
+
+			print("Sending data to node")
+			send_data_all(connections, data)
+
+			print("Waiting for return from node")
+			
 
 			return empty_func
 
